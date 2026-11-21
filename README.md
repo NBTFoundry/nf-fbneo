@@ -162,7 +162,8 @@ game is needed.
 Head unit: FinalBurn Neo holds LGPL code (two sound chips), so the
 application is a **guest** (`sdk/docs/native-apps.md`): built with the NBT
 toolchain (`make -C ../sdk toolchain` once), without any QNX file, and run as
-its own process by the `nbt-runner` NBT Manager ships (bridge 1.7, `runner`).
+its own process by the `nbt-runner` NBT Manager ships (0.2.0 and later:
+bridge 1.7, `runner`).
 
 ```sh
 make -j"$(nproc)" guest                                  # build/nbt-fbneo.guest
