@@ -1,0 +1,14 @@
+--- a/src/cpu/m68000_intf.cpp
++++ b/src/cpu/m68000_intf.cpp
+@@ -1001,7 +1001,10 @@
+ {
+ 	nSekCPUType[nCount] = nCPUType;
+ 
+-	nSekCPUOffsetAddress[nCount] = 1; // 3 for 020!
++	// NBTFoundry: 3, as for the 020, on every CPU type: a long at an address
++	// that is even but not a multiple of 4 goes byte by byte instead of a
++	// misaligned 32-bit load, which the head unit stops with SIGBUS.
++	nSekCPUOffsetAddress[nCount] = 3;
+ 
+ 	switch (nCPUType) {
+ 		case 0x68000:

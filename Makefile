@@ -37,12 +37,17 @@ CORE_LIB_NAME := libfbneo.a
 # Cyclone: Thumb-free ARM state, no unaligned access), no NEON.
 CORE_MAKE_ARGS := platform=unix fpic= USE_CYCLONE=0 HAVE_NEON=0
 core_dir = $(BUILD_DIR)/core/$(1)
+# Changes upstream's sources need on the head unit, applied to the copy:
+# m68000-aligned-longs (a 68000 long at an address that is not a multiple of 4
+# went through a misaligned 32-bit load, which the car stops with SIGBUS).
+CORE_PATCHES := $(sort $(wildcard $(abspath patches)/*.patch))
 core_lib = $(abspath $(call core_dir,$(1)))/$(CORE_LIB_NAME)
 
 # $(call core_build,kind,environment,make arguments)
 define core_build
 	@mkdir -p $(call core_dir,$(1))
 	tar -C $(CORE_SRC) --exclude='*.o' --exclude='*.d' -cf - src | tar -C $(call core_dir,$(1)) -xf -
+	for p in $(CORE_PATCHES); do patch -s -p1 -d $(call core_dir,$(1)) < $$p || exit 1; done
 	cd $(call core_dir,$(1))/src/burner/libretro && GIT_DIR=$(CORE_GIT_DIR) $(2) $(MAKE) --no-print-directory \
 		-f Makefile -f $(abspath tools/core.mk) $(CORE_MAKE_ARGS) NBT_CORE_LIB=$(call core_lib,$(1)) $(3) nbt-core
 endef

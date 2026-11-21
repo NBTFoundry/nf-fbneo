@@ -15,7 +15,7 @@
   played with a USB gamepad laid out like an arcade panel, or the iDrive controller.
 </p>
 
-FinalBurn Neo's libretro core, unmodified, on the NBT App SDK's libretro host:
+FinalBurn Neo's libretro core, with one change for the car (`patches/`), on the NBT App SDK's libretro host:
 Neo Geo, CPS-1, CPS-2, CPS-3 and thousands of other arcade boards, the frame
 scaled to the car's panel (vertical games turned upright), sound through the
 car's speakers, NVRAM saves, save states and a pause menu. Romsets stay zipped,
@@ -208,6 +208,7 @@ which the toolchain's `<sys/dirent.h>` lacks (its runtime never reports links).
 | Path | Contents |
 | --- | --- |
 | `third_party/fbneo/` | FinalBurn Neo's libretro port (libretro/FBNeo), unmodified (submodule) |
+| `patches/` | Applied to the build's copy of its sources: `m68000-aligned-longs.patch` (a 68000 long at an address not a multiple of 4 goes byte by byte; the car stops a misaligned 32-bit load with SIGBUS) |
 | `src/main.cpp` | The application: the SDK's libretro host with FinalBurn Neo's settings |
 | `src/games.*` | The game list's titles from FinalBurn Neo's driver table; BIOS sets left out |
 | `src/controls.*` | The arcade layout for each pad family, the iDrive controller and the keyboard |
