@@ -1,0 +1,4 @@
+[submodule "third_party/fbneo"]
+	path = third_party/fbneo
+	url = git@github.com:libretro/FBNeo.git
+	shallow = true
