@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: MPL-2.0
+# The package description for tools/package.py (NBTFoundry/manager): one argument
+# per line. `make package` and the release workflow both use it; they add the
+# version, sequence, key, output and executable. Bridge 1.7: the payload is the
+# guest, run by NBT Manager's nbt-runner (runner); the romsets, zipped as
+# FinalBurn Neo reads them, and their BIOS sets come through `files` (a .zip is
+# stored whole: the core reads the archive). Large sets come from a USB stick:
+# the phone sends at most 64 MiB.
+--app
+fbneo
+--compat
+nbt_6.5_armv7
+--bridge
+1.7
+--bridge-uses
+show,controller,files,runner
+--bridge-optional
+status,live-settings,gamepad
+--bridge-files
+zip,7z|512|16384
+--setting
+aspect|Aspect|4-3|4-3,pixel,full
+--setting
+filter|Filter|sharp|sharp,smooth,nearest
+--setting
+neogeo|Neo Geo|auto|auto,mvs,aes,unibios
+--setting
+cpu_speed|CPU clock|100|80,90,100,110,120
+--setting
+frameskip|Frame skip|off|off,auto,1,2
+--setting
+sound|Sound|on|on,off
+--setting
+show_fps|Show FPS|off|off,on
+--setting
+debug_log|Debug log|off|off,on
