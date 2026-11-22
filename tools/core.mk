@@ -11,11 +11,14 @@ CXXFLAGS += $(NBT_CORE_CXXFLAGS)
 
 # The list is too long for one command line: the archiver reads it from a file.
 # Beside the library, <library>.flags: upstream's defines and include folders
-# (as system folders), for our sources that use its headers.
+# (as system folders), for our sources that use its headers. Both are made
+# again only when an object or a makefile (the list, the flags) changed, so
+# what links the library does not rebuild every time.
 .PHONY: nbt-core
-nbt-core: $(OBJS)
-	$(file >$(NBT_CORE_LIB).in,$(OBJS))
-	rm -f $(NBT_CORE_LIB)
-	$(AR) rcs $(NBT_CORE_LIB) @$(NBT_CORE_LIB).in
-	rm -f $(NBT_CORE_LIB).in
-	$(file >$(NBT_CORE_LIB:.a=.flags),$(FBNEO_DEFINES) $(addprefix -isystem ,$(abspath $(INCLUDE_DIRS))))
+nbt-core: $(NBT_CORE_LIB)
+$(NBT_CORE_LIB): $(OBJS) $(MAKEFILE_LIST)
+	$(file >$@.in,$(OBJS))
+	rm -f $@
+	$(AR) rcs $@ @$@.in
+	rm -f $@.in
+	$(file >$(@:.a=.flags),$(FBNEO_DEFINES) $(addprefix -isystem ,$(abspath $(INCLUDE_DIRS))))
