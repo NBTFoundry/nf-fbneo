@@ -1,23 +1,22 @@
 <!-- SPDX-License-Identifier: MPL-2.0 -->
-# Car test: FinalBurn Neo under NBT Manager (first test)
+# Car test: FinalBurn Neo before a release
 
 Parked, ignition on. About 45 minutes, all from the phone: no adapter, no
 computer.
 
-First run of this application in a car: FinalBurn Neo's libretro core with
-every arcade driver, built as a **guest** and run by the `nbt-runner` NBT
-Manager ships (bridge 1.7). Romsets stay zipped: the car keeps the archives as
-they are and the core reads them. The main questions: Neo Geo and CPS-2 games at
-full speed with sound, vertical games upright, large romsets within the memory
-an application may use.
+Run it on a candidate before tagging a release, and whenever the car-side
+behaviour changed. FinalBurn Neo's libretro core with every arcade driver is a
+**guest**, run by the `nbt-runner` NBT Manager ships (bridge 1.7). Romsets stay
+zipped: the car keeps the archives as they are and the core reads them. The
+main questions: Neo Geo and CPS-2 games at full speed with sound, vertical
+games upright, large romsets within the memory an application may use.
 
 ## You need
 
-- NBT Manager **dev124 or later** on the car (the runner in the manager:
-  dev126 if you updated from the phone), the phone app from the same kit,
-  paired.
-- From the kit folder: `fbneo-0.0.1.nbt`, `fbneo-0.0.2.nbt`
-  (`fbneo-0.0.1-SHA256SUMS.txt`). Add both to the phone app's library.
+- NBT Manager 0.3.1 or later on the car, and its phone app, paired.
+- From the kit folder: the candidate `fbneo-<version>.nbt`, a second one with a
+  higher sequence for part C, and their `SHA256SUMS` file. Add both to the
+  phone app's library.
 - A USB stick with romsets you own, built for a recent FinalBurn Neo (DATs:
   github.com/libretro/FBNeo, `dats/`), zipped, loose or in folders:
   - a **Neo Geo** game (`mslug.zip`, `kof98.zip`…) and **`neogeo.zip`**;
@@ -30,7 +29,8 @@ an application may use.
 
 | # | Do | Look for |
 | --- | --- | --- |
-| A1 | Phone: Car › FinalBurn Neo (from your library) › install `fbneo-0.0.1`; approve on the car | The health check passes (about 10 s), "Installed" |
+| A0 | Phone: Library › open the candidate | Under the file name: **FinalBurn Neo** (version and commit), **Project: FinalBurn Neo (https://github.com/libretro/FBNeo)**, **Licence: FinalBurn Neo licence (non-commercial)**, then the text, ending with the repository's address |
+| A1 | Phone: Car › FinalBurn Neo › install (or update to) the candidate; approve on the car | The health check passes (about 10 s), "Installed" |
 | A2 | Car: hold the push on **fbneo** › settings | 8 settings: Aspect, Filter, Neo Geo, CPU clock, Frame skip, Sound, Show FPS, Debug log |
 | A3 | Set **Show FPS: on**, **Debug log: on** | Kept when you leave and come back |
 
@@ -56,7 +56,7 @@ an application may use.
 | --- | --- | --- |
 | C1 | Hold the push on **fbneo** › **Stop** | Back to iDrive |
 | C2 | Start it again | The list focuses the last game played |
-| C3 | While a game runs, phone: update to `fbneo-0.0.2`; approve | It stops, checks, installs; start again: states still there |
+| C3 | While a game runs, phone: update to the second package; approve | It stops, checks, installs; start again: states still there |
 
 ## Logs (before switching off: `/dev/shmem` is RAM)
 
@@ -69,12 +69,14 @@ an application may use.
 ## Going back
 
 Uninstall **fbneo** from its page on the phone (or hold › Uninstall on the
-car): its romsets go with it.
+car): its romsets go with it. Or install the last release from GitHub (a test
+package with a lower sequence is refused).
 
 ## Results
 
 | Step | OK / not OK | Notes |
 | --- | --- | --- |
+| A0 information shown | | |
 | A1-A3 | | |
 | B1-B2 import (time for the large sets) | | |
 | B3 titles, no BIOS entry | | |
