@@ -283,6 +283,12 @@ class PackageTest(unittest.TestCase):
             for setting in ("neogeo|Neo Geo|auto|auto,mvs,aes,unibios",
                             "frameskip|Frame skip|off|off,auto,1,2"):
                 self.assertIn(f"setting={setting}\n", manifest)
+            # What the phone app shows before an install: upstream's version, project
+            # and licence, then text.
+            self.assertRegex(manifest, r"\nproperty=FinalBurn Neo\|[0-9.]+ \([0-9a-f]{7}\)\n")
+            self.assertIn("property=Project|FinalBurn Neo (https://github.com/libretro/FBNeo)\n", manifest)
+            self.assertIn("property=Licence|FinalBurn Neo licence (non-commercial)\n", manifest)
+            self.assertIn("\ntext=\n", manifest)
 
 
 if __name__ == "__main__":

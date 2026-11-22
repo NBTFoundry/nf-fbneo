@@ -121,7 +121,7 @@ ASAN_FLAGS := -O1 -g -fsanitize=address -fno-omit-frame-pointer
 # archive only what is already wanted).
 CORE_HOST_LDLIBS := -lm -lpthread
 
-.PHONY: all host test test-asan check-static-init format guest vm-test package notice clean
+.PHONY: all host test test-asan check-static-init format guest vm-test package package-args notice clean
 
 all: host test
 
@@ -170,6 +170,7 @@ $(BUILD_DIR)/controls-asan: tests/controls_test.cpp src/controls.cpp src/control
 		src/controls.cpp $(NBT_SDK_FRONT_ASAN_LIBS) $(LDFLAGS) $(NBT_SDK_HOST_LDLIBS) -o $@
 
 test: host
+	python3 tools/package_version.py --check release/package.args
 	$(BUILD_DIR)/controls-test
 	NBT_FBNEO_APP=$(abspath $(HOST_APP)) NBT_MGR_DIR=$(abspath $(NBT_MGR_DIR)) \
 		python3 -m unittest discover -s tests -v
@@ -257,6 +258,11 @@ vm-test: $(NBT_SDK_RUNNER) $(GUEST_APP) $(VM_GAME)
 		-x 'stage: check' -x 'game invaders\.zip: ' -x 'fake-gl: closed: [1-9][0-9]* frames' \
 		-x 'runner: guest exited status=0' \
 		$^
+
+# release/package.args's FinalBurn Neo version (tools/package_version.py): again
+# when the pin moves; `make test` fails until then.
+package-args:
+	python3 tools/package_version.py release/package.args
 
 # --- The signed package (release/package.args describes it) ---
 PACKAGE_INPUT ?= $(GUEST_APP)

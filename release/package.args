@@ -34,3 +34,23 @@ sound|Sound|on|on,off
 show_fps|Show FPS|off|off,on
 --setting
 debug_log|Debug log|off|off,on
+# What the phone app shows before an install (NBT Manager's PROTOCOL.md,
+# "Package information"): the FinalBurn Neo version the pin builds
+# (tools/package_version.py: `make package-args`; `make test` checks it), the
+# project, the licence and the notices.
+--property
+FinalBurn Neo|1.0.0.03 (2cfc5f3)
+--property
+Project|FinalBurn Neo (https://github.com/libretro/FBNeo)
+--property
+Licence|FinalBurn Neo licence (non-commercial)
+--text
+Arcade games by FinalBurn Neo, with NBTFoundry's changes for NBT Manager.
+--text=
+--text
+FinalBurn Neo may be shared only free of charge: no sale, no monetary gain, no donations (its licence and MAME's).
+--text
+No game, ROM or BIOS is included.
+--text=
+--text
+Source, licences and notices: https://github.com/NBTFoundry/nf-fbneo

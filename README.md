@@ -175,7 +175,10 @@ The guest is linked with its symbols (`build/unstripped/`, with its link map,
 for crash addresses) and shipped stripped: every driver is in it, about 42 MiB
 of the 64 MiB a package holds. `package` signs it with NBT Manager's packer
 (`../manager/tools/package.py`, or `NBT_MGR_DIR`), described by
-`release/package.args`. `QNX_ENV` and `QNX_SCREEN_LIBDIR` build the SDK's
+`release/package.args`. It also carries what the phone app shows before an install
+(the FinalBurn Neo version, the project, the licence, notices); `make package-args`
+writes the version the pin builds, and `make test` fails when it lags.
+`QNX_ENV` and `QNX_SCREEN_LIBDIR` build the SDK's
 `nbt-runner` for the VM test only. Pushing a tag `vX.Y.Z` releases a signed
 package from CI (`.github/workflows/release.yml`, NBT Manager's
 `app-release.yml` with `qnx: false`: a plain runner, no private image), with
