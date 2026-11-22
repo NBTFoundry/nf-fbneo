@@ -40,7 +40,7 @@ romsets you have the right to use.
 
 ## Status
 
-Built and tested on the desktop and in QNX 6.5 SP1 under QEMU; not yet tested
+Built and tested on the desktop and in the SDK's VM under QEMU; not yet tested
 in a car.
 
 ## Adding games
@@ -130,7 +130,7 @@ Per-game DIP switches are not offered.
 
 ## Bridge
 
-The package carries the guest (built without the QNX SDP, run by NBT
+The package carries the guest (built with the NBT toolchain, run by NBT
 Manager's `nbt-runner`) and declares bridge 1.7: `show`, `controller`, `files`
 and `runner` required, `status`, `live-settings` and `gamepad` optional, and
 the files policy `zip,7z|512|16384`. It also carries what the phone app shows
@@ -160,25 +160,26 @@ the Space Invaders board's four ROMs hold a small 8080 program, each file
 given the CRC-32 the driver expects (read from upstream's driver source); no
 game is needed.
 
-Head unit: FinalBurn Neo holds LGPL code (two sound chips), so the
-application is a **guest** (`sdk/docs/native-apps.md`): built with the NBT
-toolchain (`make -C ../sdk toolchain` once), without any QNX file, and run as
-its own process by the `nbt-runner` NBT Manager ships (bridge 1.7, `runner`).
+Head unit: FinalBurn Neo holds LGPL code (two sound chips), so the application
+is a **guest** (`sdk/docs/native-apps.md`): built with the NBT toolchain (`make
+-C ../sdk toolchain` once) and run as its own process by the `nbt-runner` NBT
+Manager ships (bridge 1.7, `runner`).
 
 ```sh
 make -j"$(nproc)" guest                                  # build/nbt-fbneo.guest
 make APP_KEY=/path/to/apps-signing-key.pem package       # build/fbneo-<version>.nbt
-make QNX_ENV=… QNX_SCREEN_LIBDIR=… vm-test               # QNX 6.5 SP1 under QEMU
+make vm-test                                             # the SDK's VM under QEMU
 ```
 
 The guest is linked with its symbols (`build/unstripped/`, with its link map,
 for crash addresses) and shipped stripped: every driver is in it, about 42 MiB
 of the 64 MiB a package holds. `package` signs it with NBT Manager's packer
 (`../manager/tools/package.py`, or `NBT_MGR_DIR`), described by
-`release/package.args`; `make package-args` writes the FinalBurn Neo version
-the pin builds, and `make test` fails when it lags. `QNX_ENV` and
-`QNX_SCREEN_LIBDIR` build the SDK's `nbt-runner` for the VM test only, the
-only use of the QNX SDP. `make notice` writes `legal/NOTICE.txt`.
+`release/package.args`; `make package-args` writes the FinalBurn Neo version the
+pin builds, and `make test` fails when it lags. `vm-test` runs it in the SDK's
+VM, with the SDK's own `nbt-runner` (`sdk/docs/native-apps.md`, "Testing without
+a head unit", says what building it takes). `make notice` writes
+`legal/NOTICE.txt`.
 
 ### FinalBurn Neo on the NBT toolchain
 
@@ -195,15 +196,15 @@ upstream's own: C++11 (libc++ does not build as C++03 with picolibc's
 
 ## Releases
 
-`.github/workflows/ci.yml` runs the host tests, the same under ASan/UBSan and the
-guest build on every push and pull request. A `vX.Y.Z` tag runs
+`.github/workflows/ci.yml` runs the host tests, the same under ASan/UBSan and
+the guest build on every push and pull request. A `vX.Y.Z` tag runs
 `.github/workflows/release.yml`: NBT Manager's application release workflow
-builds the guest on a plain runner with the NBT toolchain (no QNX SDP, no
-private image), signs it with the apps key after a maintainer approves the run
-(the `release` environment, secret `APPS_SIGNING_KEY`, tags `v*` only) and
-publishes `fbneo-X.Y.Z.nbt`, sequence `X*1000000 + Y*1000 + Z`.
-`release/sdk.ref` is the SDK commit both build against:
-[SDK 0.1.0](https://github.com/NBTFoundry/sdk/releases/tag/v0.1.0).
+builds the guest on a plain runner with the NBT toolchain (no private image),
+signs it with the apps key after a maintainer approves the run (the `release`
+environment, secret `APPS_SIGNING_KEY`, tags `v*` only) and publishes
+`fbneo-X.Y.Z.nbt`, sequence `X*1000000 + Y*1000 + Z`. `release/sdk.ref` is the
+SDK commit both build against: [SDK
+0.1.0](https://github.com/NBTFoundry/sdk/releases/tag/v0.1.0).
 
 ## To confirm on the head unit
 

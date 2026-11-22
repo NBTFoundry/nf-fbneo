@@ -11,12 +11,6 @@ APP_KEY ?=
 # $(BUILD_DIR)/sdk; the manager is only needed for packaging.
 NBT_SDK_DIR ?= ../sdk
 NBT_MGR_DIR ?= ../manager
-# The QNX SDP builds only the SDK's nbt-runner, for the VM test: FinalBurn
-# Neo holds LGPL code, so the application is a guest, never a QNX build. On
-# the car, NBT Manager's own nbt-runner runs the guest (bridge 1.7, runner).
-QNX_ENV ?=
-QNX_SCREEN_LIBDIR ?=
-
 CC ?= gcc
 CXX ?= g++
 
@@ -195,10 +189,10 @@ check-static-init: $(call app_objs,host)
 format:
 	clang-format -i src/*.cpp src/*.hpp tests/*.cpp
 
-# --- The guest: built without the QNX SDP, run by nbt-runner as its own
-# process (sdk/guest). FinalBurn Neo holds LGPL code (c6280, ymf278b), which
-# the QNX licence forbids linking statically with QNX code: a guest, never a
-# module or a QNX build (the licence gate checks). ---
+# --- The guest: built with the NBT toolchain, run by nbt-runner as its own
+# process (sdk/guest). FinalBurn Neo holds LGPL code (c6280, ymf278b), so it
+# must be a guest, never a module (the SDK's licence gate checks;
+# sdk/docs/native-apps.md). ---
 GUEST_APP := $(BUILD_DIR)/nbt-fbneo.guest
 # Every licence of the linked objects (legal/README.md): FinalBurn Neo's own
 # (non-commercial) and MAME's, its BSD-3-Clause and MIT files, the LGPL and
@@ -235,8 +229,8 @@ $(GUEST_APP): $(GUEST_UNSTRIPPED)
 
 guest: $(GUEST_APP)
 
-# --- The guest in QNX 6.5 SP1 under QEMU (the SDK's tools/qnx65-vm; no GPU,
-# no sound: both faked): a health check, then the romset of
+# --- The guest in the SDK's VM under QEMU (no GPU, no sound: both faked;
+# sdk/docs/native-apps.md for what its nbt-runner needs): a health check, then the romset of
 # tests/test_fbneo.py played, which must draw frames and stop cleanly. ---
 VM_GAME := $(BUILD_DIR)/vm/invaders.zip
 VM_PLAY := NBT_LAUNCH=user NBT_SURFACE=5 NBT_RUNNER_FAKE_GL=1 NBT_RUNNER_FAKE_AUDIO=1 \
@@ -248,7 +242,8 @@ $(VM_GAME): tests/test_fbneo.py
 		open(sys.argv[1], "wb").write(test_fbneo.romset_zip())' $@
 
 vm-test: $(NBT_SDK_RUNNER) $(GUEST_APP) $(VM_GAME)
-	QEMU_RUN_SECS=240 $(NBT_SDK_ROOT)/tools/qnx65-vm/run.sh \
+	@test -n "$(NBT_SDK_VM_RUN)" || { echo "$(NBT_SDK_ROOT) has no VM: update that SDK checkout"; exit 1; }
+	QEMU_RUN_SECS=240 $(NBT_SDK_VM_RUN) \
 		-c "NBT_LAUNCH=check NBT_DATA_DIR=/dev/shmem nbt-runner --nbt-payload /proc/boot/$(notdir $(GUEST_APP)) &" \
 		-c "waitfor /none 10" -c "slay -s TERM nbt-runner" -c "waitfor /none 3" \
 		-c "$(VM_PLAY) nbt-runner --nbt-payload /proc/boot/$(notdir $(GUEST_APP)) --game invaders.zip &" \
