@@ -91,10 +91,8 @@ $(call core_lib,asan): FORCE
 
 # The guest: the NBT toolchain's flags and runtime (sdk/module/flags.mk).
 # C++11 rather than upstream's C++98: libc++ in C++03 mode does not build
-# with picolibc's _Static_assert macro. DT_LNK: libretro-common's VFS names
-# it; the toolchain's <sys/dirent.h> (1.1.0) has only the types the runtime
-# reports (never a link), so its value never matches.
-CORE_GUEST_CFLAGS := -w -DDT_LNK=10
+# with picolibc's _Static_assert macro.
+CORE_GUEST_CFLAGS := -w
 CORE_GUEST_CXXFLAGS := -w -std=gnu++11
 CORE_ENV_guest = CFLAGS="$(NBT_MOD_CFLAGS)" CXXFLAGS="$(NBT_MOD_CXXFLAGS)"
 CORE_ARGS_guest = CC="$(NBT_MOD_CC)" CXX="$(NBT_MOD_CXX)" AR="$(NBT_MOD_AR)" \
